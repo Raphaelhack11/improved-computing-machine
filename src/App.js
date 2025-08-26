@@ -1,9 +1,7 @@
-function App() {
-  return (
-    <div className="bg-red-500 h-screen flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-white">Tailwind is working 🎉</h1>
-    </div>
-  );
-}
+import React from "react";
+import LandingPage from "./pages/LandingPage";
 
-export default App;
+export default function App() {
+  // Render the real landing page (no test red screen)
+  return <LandingPage />;
+    }
