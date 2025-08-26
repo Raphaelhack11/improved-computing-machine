@@ -1,59 +1,63 @@
+import React from "react";
 import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-yellow-50 to-white">
-      <section className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-            Smart Crypto Investing with{" "}
-            <span className="text-yellow-500">Profit Bliss</span>
-          </h1>
-          <p className="mt-5 text-lg text-gray-700">
-            A modern, secure, and transparent way to grow your assets. Clean UX,
-            clear plans, and fast deposits/withdrawals.
-          </p>
-          <div className="mt-8 flex gap-4">
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      <header className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-indigo-600">Profit Bliss</h1>
+          <nav className="space-x-4">
+            <Link
+              to="/login"
+              className="text-gray-700 hover:text-indigo-600 font-medium"
+            >
+              Login
+            </Link>
             <Link
               to="/signup"
-              className="px-6 py-3 rounded-xl bg-yellow-500 text-white font-semibold hover:brightness-95"
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition"
+            >
+              Sign Up
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="flex-grow bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-16 text-center">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+            Grow Your Wealth with Profit Bliss
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+            Manage your investments, track growth, and achieve financial freedom
+            with our secure and user-friendly platform.
+          </p>
+          <div className="flex justify-center space-x-4">
+            <Link
+              to="/signup"
+              className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-indigo-700 transition"
             >
               Get Started
             </Link>
             <Link
-              to="/about"
-              className="px-6 py-3 rounded-xl border border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+              to="/login"
+              className="bg-white border border-gray-300 px-6 py-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-100 transition"
             >
-              Learn More
+              Login
             </Link>
           </div>
         </div>
+      </main>
 
-        <div className="flex justify-center">
-          <div className="w-64 h-64 rounded-2xl bg-yellow-100 grid place-items-center shadow-inner">
-            <span className="text-7xl">₿</span>
-          </div>
+      {/* Footer */}
+      <footer className="bg-white shadow-inner py-6">
+        <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+          © {new Date().getFullYear()} Profit Bliss. All rights reserved.
         </div>
-      </section>
-
-      <section className="bg-gray-50 border-y">
-        <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-6">
-          {[
-            ["Secure", "Best practices and transparent operations."],
-            ["Fast", "Quick deposits and withdrawals."],
-            ["Modern", "Clean fintech UI that inspires trust."]
-          ].map(([title, desc]) => (
-            <div key={title} className="bg-white rounded-2xl p-6 shadow-sm">
-              <h3 className="text-xl font-semibold">{title}</h3>
-              <p className="mt-2 text-gray-600">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <footer className="text-center py-6 text-sm text-gray-500">
-        © {new Date().getFullYear()} Profit Bliss. All rights reserved.
       </footer>
-    </main>
+    </div>
   );
-}
+                }
