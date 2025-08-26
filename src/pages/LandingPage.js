@@ -1,48 +1,45 @@
 export default function LandingPage() {
   return (
-    <div className="bg-white min-h-screen flex flex-col">
-      {/* Hero Section */}
-      <header className="bg-indigo-600 text-white p-6">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Profit Bliss</h1>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Navbar */}
+      <header className="w-full bg-white shadow">
+        <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
+          <h1 className="text-2xl font-bold text-blue-600">ProfitBliss</h1>
           <nav className="space-x-6">
-            <a href="#features" className="hover:text-gray-200">Features</a>
-            <a href="#about" className="hover:text-gray-200">About</a>
-            <a href="#contact" className="hover:text-gray-200">Contact</a>
+            <a href="/login" className="text-gray-700 hover:text-blue-600">
+              Login
+            </a>
+            <a
+              href="/register"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            >
+              Sign Up
+            </a>
           </nav>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="flex-1 flex flex-col items-center justify-center text-center px-6">
-        <h2 className="text-4xl md:text-6xl font-bold text-gray-900">
-          Welcome to Profit Bliss
+      {/* Hero Section */}
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4">
+        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          Grow Your Wealth with Confidence
         </h2>
-        <p className="mt-4 text-lg text-gray-600 max-w-2xl">
-          The smart way to manage your investments and grow your wealth.
+        <p className="text-lg text-gray-600 max-w-2xl mb-6">
+          ProfitBliss helps you manage your investments, track growth, and
+          achieve financial freedom with ease.
         </p>
-        <div className="mt-6 space-x-4">
-          <a
-            href="/login"
-            className="bg-indigo-600 text-white px-6 py-3 rounded-lg shadow hover:bg-indigo-700"
-          >
-            Get Started
-          </a>
-          <a
-            href="#features"
-            className="bg-gray-200 text-gray-900 px-6 py-3 rounded-lg shadow hover:bg-gray-300"
-          >
-            Learn More
-          </a>
-        </div>
-      </section>
+        <a
+          href="/register"
+          className="bg-blue-600 text-white px-6 py-3 rounded-xl shadow hover:bg-blue-700"
+        >
+          Get Started
+        </a>
+      </main>
 
       {/* Footer */}
-      <footer className="bg-gray-100 text-center p-4">
-        <p className="text-sm text-gray-600">
-          © {new Date().getFullYear()} Profit Bliss. All rights reserved.
-        </p>
+      <footer className="bg-white shadow py-4 text-center text-gray-500">
+        © {new Date().getFullYear()} ProfitBliss. All rights reserved.
       </footer>
     </div>
   );
-    }
+        }
