@@ -31,7 +31,7 @@ export default function App() {
           <Route path="/withdraw" element={<WithdrawPage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
