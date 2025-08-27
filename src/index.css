@@ -2,7 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Optional: custom styles */
-body {
-  @apply bg-gray-50 text-gray-900;
+/* Smooth transitions */
+* {
+  @apply transition-colors duration-200;
+}
+
+/* Glossy modal backdrop */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/30 backdrop-blur-xs flex items-center justify-center z-50;
 }
