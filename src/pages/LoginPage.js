@@ -1,37 +1,42 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../utils/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const nav = useNavigate();
+  const { setUser, setToken } = useAuth();
 
-  const handleLogin = (e) => {
+  async function onSubmit(e) {
     e.preventDefault();
-    // Later we’ll replace with real auth check
-    navigate("/dashboard");
-  };
+    try {
+      setLoading(true);
+      const data = await login({ email, password });
+      if (data.token) {
+        setToken(data.token);
+        setUser(data.user);
+        nav("/dashboard");
+      }
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Login
-          </button>
-        </form>
-      </div>
+    <div className="min-h-[80vh] grid place-items-center px-4">
+      <form onSubmit={onSubmit} className="w-full max-w-sm bg-white border rounded-2xl p-6 shadow-glossy">
+        <h1 className="text-2xl font-bold text-brand-700 mb-4">Login</h1>
+        <input className="w-full border rounded-lg px-3 py-2 mb-3" placeholder="Email" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} />
+        <input className="w-full border rounded-lg px-3 py-2 mb-4" placeholder="Password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />
+        <button disabled={loading} className="w-full rounded-lg bg-brand-500 text-white py-2 hover:bg-brand-600">
+          {loading ? "Loading..." : "Login"}
+        </button>
+      </form>
     </div>
   );
-              }
+    }
