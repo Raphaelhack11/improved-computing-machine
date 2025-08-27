@@ -13,7 +13,7 @@ import DepositPage from "./pages/DepositPage";
 import WithdrawPage from "./pages/WithdrawPage";
 import HistoryPage from "./pages/HistoryPage";
 import ContactPage from "./pages/ContactPage";
-import AdminDashboardPage from "./pages/AdminDashboardpage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
