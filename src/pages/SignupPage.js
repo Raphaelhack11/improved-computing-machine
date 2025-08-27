@@ -1,40 +1,43 @@
-import React, { useState } from "react";
-import { signup } from "../api";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { signup } from "../api/auth";
 
-function SignupPage() {
+export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
 
-  const handleSignup = async () => {
-    const result = await signup(email, password);
-    if (result.message === "User created, verification email sent") {
-      alert("Check your email for verification");
-      navigate("/login");
-    } else {
-      alert(result.message || "Signup failed");
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await signup(email, password);
+      if (data.message) {
+        setMessage("Signup successful ✅");
+      } else {
+        setMessage(data.error || "Signup failed ❌");
+      }
+    } catch {
+      setMessage("Something went wrong ❌");
     }
   };
 
   return (
-    <div className="auth-page">
-      <h2>Sign Up</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleSignup}>Sign Up</button>
+    <div>
+      <h2>Signup</h2>
+      <form onSubmit={handleSignup}>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button type="submit">Signup</button>
+      </form>
+      <p>{message}</p>
     </div>
   );
-}
-
-export default SignupPage;
+    }
