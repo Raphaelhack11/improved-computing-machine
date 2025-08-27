@@ -1,18 +1,27 @@
-export default function ContactPage() {
+import { useState } from "react";
+
+export default function Contact() {
+  const [form, setForm] = useState({ name:"", email:"", message:"" });
+  const [sent, setSent] = useState(false);
+
+  function onChange(e){ setForm({ ...form, [e.target.name]: e.target.value }); }
+  function onSubmit(e){ e.preventDefault(); setSent(true); /* hook backend later */ }
+
   return (
-    <div className="max-w-xl mx-auto px-6 py-12">
-      <h2 className="text-3xl font-bold mb-4">Contact Us</h2>
-      <p className="text-gray-700 mb-6">
-        Need help? Send us a message and we’ll get back to you.
-      </p>
-      <form className="space-y-4">
-        <input className="w-full px-4 py-3 border rounded-lg" placeholder="Your Name" />
-        <input className="w-full px-4 py-3 border rounded-lg" placeholder="Email" type="email" />
-        <textarea className="w-full px-4 py-3 border rounded-lg" rows="4" placeholder="Message"></textarea>
-        <button type="button" className="px-5 py-3 rounded-lg bg-yellow-500 text-white hover:brightness-95">
-          Send Message
-        </button>
-      </form>
+    <div className="max-w-3xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold text-brand-700">Contact Us</h1>
+      <p className="text-gray-600 mt-1">We typically reply within 24 hours.</p>
+
+      {sent ? (
+        <div className="mt-6 p-4 rounded-xl bg-green-50 text-green-700">Message sent! We’ll respond soon.</div>
+      ) : (
+        <form onSubmit={onSubmit} className="mt-6 grid gap-3">
+          <input name="name" value={form.name} onChange={onChange} placeholder="Your name" className="border rounded-lg px-3 py-2" />
+          <input name="email" value={form.email} onChange={onChange} placeholder="Your email" type="email" className="border rounded-lg px-3 py-2" />
+          <textarea name="message" value={form.message} onChange={onChange} placeholder="Message" rows="5" className="border rounded-lg px-3 py-2"></textarea>
+          <button className="px-4 py-2 rounded-lg bg-brand-500 text-white hover:bg-brand-600 w-max">Send</button>
+        </form>
+      )}
     </div>
   );
-}
+        }
