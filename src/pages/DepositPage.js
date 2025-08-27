@@ -1,75 +1,71 @@
 import { useState } from "react";
+import CopyButton from "../components/CopyButton";
+import { createTransaction } from "../utils/api";
 
-const BTC_ADDRESS = "bc1q4c6f7xzsekkpvd2guwkaww4m7se9yjlrxnrjc7";
-const ERC20_USDT = "0x08cFE6DDC3b58B0655dD1c9214BcfdDBD3855CCA";
-const ETH_ADDRESS = "0x08cFE6DDC3b58B0655dD1c9214BcfdDBD3855CCA";
+const ADDR = {
+  Bitcoin:  "bc1q4c6f7xzsekkpvd2guwkaww4m7se9yjlrxnrjc7",
+  USDT:     "0x08cFE6DDC3b58B0655dD1c9214BcfdDBD3855CCA",
+  Ethereum: "0x08cFE6DDC3b58B0655dD1c9214BcfdDBD3855CCA"
+};
 
-export default function DepositPage() {
+export default function Deposit() {
+  const [method, setMethod] = useState("Bitcoin");
   const [amount, setAmount] = useState("");
-  const [method, setMethod] = useState("USDT (ERC-20)");
+  const token = localStorage.getItem("token");
+  const min = 50;
 
-  const getAddress = () =>
-    method.startsWith("BTC") ? BTC_ADDRESS :
-    method.startsWith("ETH") ? ETH_ADDRESS : ERC20_USDT;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const amt = Number(amount);
-    if (amt < 50) {
-      alert("Minimum deposit amount is $50");
+  async function submit() {
+    const val = Number(amount);
+    if (!val || val < min) {
+      setAmount("");
+      const el = document.getElementById("amount");
+      el.classList.add("animate-[wiggle_0.2s_ease-in-out_2]");
+      setTimeout(()=>el.classList.remove("animate-[wiggle_0.2s_ease-in-out_2]"), 400);
+      alert("Minimum deposit amount $50");
       return;
     }
-    alert(`Deposit requested: $${amt} via ${method}\nSend to: ${getAddress()}`);
-  };
-
-  const copy = async () => {
-    await navigator.clipboard.writeText(getAddress());
-    alert("Address copied!");
-  };
+    try {
+      await createTransaction("deposit", val, token);
+      alert("Deposit created. Admin will approve.");
+    } catch (e) {
+      alert(e.message);
+    }
+  }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50 px-4">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Deposit Funds</h2>
+    <div className="max-w-3xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold text-brand-700">Deposit</h1>
+      <p className="text-gray-600 mt-1">Minimum deposit amount <b>$50</b></p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <select value={method} onChange={(e) => setMethod(e.target.value)} className="w-full px-4 py-3 border rounded-lg">
-            <option>USDT (ERC-20)</option>
-            <option>BTC (Bitcoin)</option>
-            <option>ETH (Ethereum)</option>
-          </select>
-
+      <div className="mt-6 rounded-3xl border p-6 bg-white shadow-glossy">
+        <div className="grid sm:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Amount (min $50)</label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full px-4 py-3 border rounded-lg"
-              placeholder="Enter amount"
-              required
-              min="0"
-            />
-          </div>
+            <label className="text-sm text-gray-600">Payment Method</label>
+            <select value={method} onChange={(e)=>setMethod(e.target.value)} className="w-full border rounded-lg px-3 py-2 mt-1">
+              <option>Bitcoin</option>
+              <option>USDT</option>
+              <option>Ethereum</option>
+            </select>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Wallet Address</label>
-            <div className="flex items-center gap-2">
-              <input readOnly className="w-full px-4 py-3 border rounded-lg bg-gray-100 font-mono text-sm" value={getAddress()} />
-              <button type="button" onClick={copy} className="px-3 py-2 rounded-lg bg-gray-900 text-white hover:brightness-95">
-                Copy
-              </button>
+            <div className="mt-4">
+              <div className="text-sm text-gray-600 mb-1">Wallet Address {method==="USDT" && <span className="text-xs text-gray-500">(ERC-20 only)</span>}</div>
+              <div className="flex items-center gap-2">
+                <code className="text-sm bg-gray-50 px-2 py-1 rounded">{ADDR[method]}</code>
+                <CopyButton value={ADDR[method]} />
+              </div>
             </div>
-            {method.includes("USDT") && (
-              <p className="text-xs text-gray-500 mt-1">USDT address is ERC-20 only.</p>
-            )}
           </div>
 
-          <button type="submit" className="w-full py-3 rounded-lg bg-yellow-500 text-white font-semibold hover:brightness-95">
-            Confirm Deposit
-          </button>
-        </form>
+          <div>
+            <label className="text-sm text-gray-600">Amount (USD)</label>
+            <input id="amount" value={amount} onChange={(e)=>setAmount(e.target.value)} type="number" className="w-full border rounded-lg px-3 py-2 mt-1" />
+
+            <button onClick={submit} className="mt-4 w-full rounded-lg bg-brand-500 text-white py-2 hover:bg-brand-600">
+              Create Deposit
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+                                              }
