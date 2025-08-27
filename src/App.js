@@ -1,42 +1,28 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ChatWidget from "./components/ChatWidget";
-import ScrollToTop from "./components/ScrollToTop";
-
+import SettingsPage from "./pages/SettingsPage";
+import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
-import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
-import DepositPage from "./pages/DepositPage";
-import WithdrawPage from "./pages/WithdrawPage";
-import HistoryPage from "./pages/HistoryPage";
-import ContactPage from "./pages/ContactPage";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
-import NotFound from "./pages/NotFound";
+import TransactionsPage from "./pages/TransactionsPage";
 
-export default function App() {
+function App() {
   return (
-    <AuthProvider>
+    <>
+      <Toaster position="top-right" />
       <BrowserRouter>
-        <ScrollToTop />
-        <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/deposit" element={<DepositPage />} />
-          <Route path="/withdraw" element={<WithdrawPage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/admin" element={<AdminDashboardPage />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
-        <Footer />
-        <ChatWidget />
       </BrowserRouter>
-    </AuthProvider>
+    </>
   );
-    }
+}
+
+export default App;
