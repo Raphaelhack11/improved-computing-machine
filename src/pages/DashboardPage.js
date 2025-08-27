@@ -1,77 +1,98 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { getBalance, deposit, withdraw } from "../api/auth";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Card, CardContent } from "@/components/ui/card";
 
-// Your backend base URL
-const API_URL = import.meta.env.VITE_API_URL || "https://your-backend-url.onrender.com";
-
-const Dashboard = () => {
-  const [balance, setBalance] = useState(0);
-  const [transactions, setTransactions] = useState([]);
+export default function DashboardPage() {
+  const [balance, setBalance] = useState(null);
+  const [amount, setAmount] = useState("");
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // ✅ fetch balance
-        const balRes = await axios.get(`${API_URL}/balance`, { withCredentials: true });
-        setBalance(balRes.data.balance);
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    getBalance(token)
+      .then((data) => setBalance(data.balance))
+      .catch(() => setBalance("Error ❌"));
+  }, [navigate, token]);
 
-        // ✅ fetch transaction history
-        const txRes = await axios.get(`${API_URL}/history`, { withCredentials: true });
-        setTransactions(txRes.data);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load dashboard data");
-      }
-    };
+  const handleDeposit = async () => {
+    try {
+      await deposit(token, Number(amount));
+      const data = await getBalance(token);
+      setBalance(data.balance);
+      setAmount("");
+      toast.success("Deposit successful ✅");
+    } catch {
+      toast.error("Deposit failed ❌");
+    }
+  };
 
-    fetchData();
-  }, []);
+  const handleWithdraw = async () => {
+    try {
+      await withdraw(token, Number(amount));
+      const data = await getBalance(token);
+      setBalance(data.balance);
+      setAmount("");
+      toast.success("Withdraw successful ✅");
+    } catch {
+      toast.error("Withdraw failed ❌");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    toast("Logged out");
+    navigate("/login");
+  };
 
   return (
-    <div className="p-6 grid grid-cols-1 gap-6">
-      {/* Balance card */}
-      <Card className="shadow-lg rounded-2xl">
-        <CardContent className="p-6 text-center">
-          <h2 className="text-xl font-bold">Your Balance</h2>
-          <p className="text-3xl mt-2 text-green-600">${balance.toFixed(2)}</p>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-blue-50">
+      {/* Navbar */}
+      <nav className="bg-blue-600 text-white p-4 flex justify-between">
+        <h1 className="font-bold">Profit Bliss</h1>
+        <div className="space-x-4">
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/transactions">Transactions</Link>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      </nav>
 
-      {/* Transactions list */}
-      <Card className="shadow-lg rounded-2xl">
-        <CardContent className="p-6">
-          <h2 className="text-xl font-bold mb-4">Recent Transactions</h2>
-          {transactions.length === 0 ? (
-            <p className="text-gray-500">No transactions yet.</p>
-          ) : (
-            <ul className="space-y-2">
-              {transactions.map((tx) => (
-                <li
-                  key={tx.id}
-                  className="flex justify-between border-b pb-2 last:border-none"
-                >
-                  <span className="capitalize">{tx.type}</span>
-                  <span
-                    className={`${
-                      tx.amount > 0 ? "text-green-600" : "text-red-600"
-                    } font-semibold`}
-                  >
-                    {tx.amount > 0 ? "+" : ""}
-                    {tx.amount}
-                  </span>
-                  <span className="text-gray-500 text-sm">
-                    {new Date(tx.createdAt).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+      {/* Main */}
+      <div className="flex flex-col items-center justify-center mt-10">
+        <div className="bg-white p-6 rounded shadow-md w-96 text-center">
+          <h2 className="text-2xl font-bold text-blue-600 mb-4">Dashboard</h2>
+          <p className="text-lg mb-4">Your Balance:</p>
+          <p className="text-3xl font-bold text-green-600 mb-4">
+            {balance !== null ? `$${balance}` : "Loading..."}
+          </p>
+
+          <input
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full p-2 border rounded mb-3"
+          />
+          <div className="flex space-x-2">
+            <button
+              onClick={handleDeposit}
+              className="flex-1 bg-green-500 text-white py-2 rounded"
+            >
+              Deposit
+            </button>
+            <button
+              onClick={handleWithdraw}
+              className="flex-1 bg-red-500 text-white py-2 rounded"
+            >
+              Withdraw
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Dashboard;
+  }
