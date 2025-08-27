@@ -1,55 +1,41 @@
 import { useState } from "react";
+import { createTransaction } from "../utils/api";
 
-export default function WithdrawPage() {
-  const [form, setForm] = useState({ amount: "", address: "" });
+export default function Withdraw() {
+  const [amount, setAmount] = useState("");
+  const token = localStorage.getItem("token");
+  const min = 70;
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const amt = Number(form.amount);
-    if (amt < 70) {
-      alert("Minimum withdrawal amount is $70");
+  async function submit() {
+    const val = Number(amount);
+    if (!val || val < min) {
+      setAmount("");
+      const el = document.getElementById("wamount");
+      el.classList.add("animate-[wiggle_0.2s_ease-in-out_2]");
+      setTimeout(()=>el.classList.remove("animate-[wiggle_0.2s_ease-in-out_2]"), 400);
+      alert("Minimum withdrawable amount $70");
       return;
     }
-    alert(`Withdrawal requested: $${amt} to ${form.address} (demo)`);
-  };
+    try {
+      await createTransaction("withdraw", val, token);
+      alert("Withdrawal created. Admin will approve.");
+    } catch (e) {
+      alert(e.message);
+    }
+  }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50 px-4">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Withdraw Funds</h2>
+    <div className="max-w-3xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold text-brand-700">Withdraw</h1>
+      <p className="text-gray-600 mt-1">Minimum withdrawable amount <b>$70</b></p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="number"
-            name="amount"
-            placeholder="Enter Amount (min $70)"
-            value={form.amount}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-lg"
-            required
-            min="0"
-          />
-
-          <input
-            type="text"
-            name="address"
-            placeholder="Your USDT (ERC-20) Wallet Address"
-            value={form.address}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-lg"
-            required
-          />
-
-          <button
-            type="submit"
-            className="w-full py-3 rounded-lg bg-yellow-500 text-white font-semibold hover:brightness-95"
-          >
-            Request Withdrawal
-          </button>
-        </form>
+      <div className="mt-6 rounded-3xl border p-6 bg-white shadow-glossy">
+        <label className="text-sm text-gray-600">Amount (USD)</label>
+        <input id="wamount" value={amount} onChange={(e)=>setAmount(e.target.value)} type="number" className="w-full border rounded-lg px-3 py-2 mt-1" />
+        <button onClick={submit} className="mt-4 w-full rounded-lg bg-brand-500 text-white py-2 hover:bg-brand-600">
+          Request Withdrawal
+        </button>
       </div>
     </div>
   );
-}
+  }
